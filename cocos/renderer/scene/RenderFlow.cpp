@@ -168,7 +168,9 @@ void RenderFlow::calculateLocalMatrix(int tid)
             if (signData->freeFlag == SPACE_FREE_FLAG) continue;
             
             // reset world transform changed flag
-            *dirty &= ~(WORLD_TRANSFORM_CHANGED | NODE_OPACITY_CHANGED);
+            if (!_renderTargetNode) {
+                *dirty &= ~(WORLD_TRANSFORM_CHANGED | NODE_OPACITY_CHANGED);
+            }
             if (!(*dirty & LOCAL_TRANSFORM)) continue;
             
             localMat->setIdentity();
@@ -183,7 +185,9 @@ void RenderFlow::calculateLocalMatrix(int tid)
             cocos2d::Mat4::createScale(trs->sx, trs->sy, trsSZ, &matTemp);
             cocos2d::Mat4::multiply(*localMat, matTemp, localMat);
             
-            *dirty &= ~LOCAL_TRANSFORM;
+            if (!_renderTargetNode) {
+                *dirty &= ~LOCAL_TRANSFORM;
+            }
             *dirty |= WORLD_TRANSFORM;
         }
     }
@@ -223,14 +227,18 @@ void RenderFlow::calculateLevelWorldMatrix(int tid, int stage)
             {
                 cocos2d::Mat4::multiply(*info.parentWorldMat, *info.localMat, info.worldMat);
                 *dirty |= WORLD_TRANSFORM_CHANGED;
-                *dirty &= ~WORLD_TRANSFORM;
+                if (!_renderTargetNode) {
+                    *dirty &= ~WORLD_TRANSFORM;
+                }
             }
             
             if ((*parentDirty & NODE_OPACITY_CHANGED) || selfOpacityDirty)
             {
                 *info.realOpacity = *info.opacity * *info.parentRealOpacity / 255.0f;
                 *dirty |= NODE_OPACITY_CHANGED;
-                *dirty &= ~OPACITY;
+                if (!_renderTargetNode) {
+                    *dirty &= ~OPACITY;
+                }
             }
         }
         else
@@ -239,14 +247,18 @@ void RenderFlow::calculateLevelWorldMatrix(int tid, int stage)
             {
                 *info.worldMat = *info.localMat;
                 *dirty |= WORLD_TRANSFORM_CHANGED;
-                *dirty &= ~WORLD_TRANSFORM;
+                if (!_renderTargetNode) {
+                    *dirty &= ~WORLD_TRANSFORM;
+                }
             }
             
             if (selfOpacityDirty)
             {
                 *info.realOpacity = *info.opacity;
                 *dirty |= NODE_OPACITY_CHANGED;
-                *dirty &= ~OPACITY;
+                if (!_renderTargetNode) {
+                    *dirty &= ~OPACITY;
+                }
             }
         }
     }
@@ -269,14 +281,18 @@ void RenderFlow::calculateWorldMatrix()
                 {
                     cocos2d::Mat4::multiply(*info.parentWorldMat, *info.localMat, info.worldMat);
                     *info.dirty |= WORLD_TRANSFORM_CHANGED;
-                    *info.dirty &= ~WORLD_TRANSFORM;
+                    if (!_renderTargetNode) {
+                        *info.dirty &= ~WORLD_TRANSFORM;
+                    }
                 }
                 
                 if ((*info.parentDirty & NODE_OPACITY_CHANGED) || selfOpacityDirty)
                 {
                     *info.realOpacity = *info.opacity * *info.parentRealOpacity / 255.0f;
                     *info.dirty |= NODE_OPACITY_CHANGED;
-                    *info.dirty &= ~OPACITY;
+                    if (!_renderTargetNode) {
+                        *info.dirty &= ~OPACITY;
+                    }
                 }
             }
             else
@@ -285,14 +301,18 @@ void RenderFlow::calculateWorldMatrix()
                 {
                     *info.worldMat = *info.localMat;
                     *info.dirty |= WORLD_TRANSFORM_CHANGED;
-                    *info.dirty &= ~WORLD_TRANSFORM;
+                    if (!_renderTargetNode) {
+                        *info.dirty &= ~WORLD_TRANSFORM;
+                    }
                 }
                 
                 if (selfOpacityDirty)
                 {
                     *info.realOpacity = *info.opacity;
                     *info.dirty |= NODE_OPACITY_CHANGED;
-                    *info.dirty &= ~OPACITY;
+                    if (!_renderTargetNode) {
+                        *info.dirty &= ~OPACITY;
+                    }
                 }
             }
         }

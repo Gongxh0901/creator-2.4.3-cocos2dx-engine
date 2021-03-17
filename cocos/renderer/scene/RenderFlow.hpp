@@ -159,6 +159,9 @@ public:
      *  @brief insert node level
      */
     void insertNodeLevel(std::size_t level, const LevelInfo& levelInfo);
+    
+    // 设置渲染指定节点
+    inline void setRenderTargetNode(bool renderTargetNode) { _renderTargetNode = renderTargetNode; }
 private:
     
     static RenderFlow *_instance;
@@ -172,6 +175,9 @@ private:
 
     ParallelStage _parallelStage = ParallelStage::NONE;
     ParallelTask* _paralleTask = nullptr;
+    
+    // 如果渲染指定节点，则不重置dirty
+    bool _renderTargetNode = false;
 };
 
 // end of scene group

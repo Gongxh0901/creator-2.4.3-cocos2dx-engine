@@ -3947,11 +3947,31 @@ static bool js_cocos2d_renderer_RenderFlow_finalize(se::State& s)
 }
 SE_BIND_FINALIZE_FUNC(js_cocos2d_renderer_RenderFlow_finalize)
 
+static bool js_renderer_RenderFlow_setRenderTargetNode(se::State& s)
+{
+    cocos2d::renderer::RenderFlow* cobj = (cocos2d::renderer::RenderFlow*)s.nativeThisObject();
+    SE_PRECONDITION2(cobj, false, "js_renderer_RenderFlow_setRenderTargetNode : Invalid Native Object");
+    const auto& args = s.args();
+    size_t argc = args.size();
+    CC_UNUSED bool ok = true;
+    if (argc == 1) {
+        bool arg0 = false;
+        ok &= seval_to_boolean(args[0], &arg0);
+        SE_PRECONDITION2(ok, false, "js_renderer_RenderFlow_setRenderTargetNode : Error processing arguments");
+        cobj->setRenderTargetNode(arg0);
+        return true;
+    }
+    SE_REPORT_ERROR("wrong number of arguments: %d, was expecting %d", (int)argc, 2);
+    return false;
+}
+SE_BIND_FUNC(js_renderer_RenderFlow_setRenderTargetNode)
+
 bool js_register_renderer_RenderFlow(se::Object* obj)
 {
     auto cls = se::Class::create("RenderFlow", obj, nullptr, _SE(js_renderer_RenderFlow_constructor));
 
     cls->defineFunction("render", _SE(js_renderer_RenderFlow_render));
+    cls->defineFunction("setRenderTargetNode", _SE(js_renderer_RenderFlow_setRenderTargetNode));
     cls->defineFinalizeFunction(_SE(js_cocos2d_renderer_RenderFlow_finalize));
     cls->install();
     JSBClassType::registerClass<cocos2d::renderer::RenderFlow>(cls);
